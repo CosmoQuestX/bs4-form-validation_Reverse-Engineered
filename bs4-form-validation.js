@@ -166,8 +166,8 @@ class Validation {
 
     /**
      * Validates that the input value contains at least one uppercase letter.
-     * @param target_element
-     * @returns {string}
+     * @param {jQuery} target_element - The jQuery object of the input element to validate.
+     * @returns {string} - A message indicating the absence of uppercase letters in the input value, if applicable.
      */
     capitalCheck(target_element) {
         return target_element.val().match(/[A-Z]+/) ? "" : "Must contain capital letter. "
@@ -175,9 +175,9 @@ class Validation {
 
     /**
      * Checks if the password and its confirmation match.
-     * @param password_element
-     * @param confirm_password_element
-     * @returns {string}
+     * @param {jQuery} password_element - The jQuery object of the password input element.
+     * @param {jQuery} confirm_password_element - The jQuery object of the confirmation password input element.
+     * @returns {string} - A message indicating whether the passwords do not match.
      */
     passwordMatchCheck(password_element, confirm_password_element) {
         return password_element.val() === confirm_password_element.val() ? "" : "Passwords do not match. "
@@ -185,8 +185,8 @@ class Validation {
 
     /**
      * Validates that the input value is a properly formatted email address.
-     * @param target_element
-     * @returns {string}
+     * @param {jQuery} target_element - The jQuery object of the input element to validate.
+     * @returns {string} - A message indicating whether the input value is not a valid email address.
      */
     emailCheck(target_element) {
         return target_element.val().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ? "" : "Is not a proper email"
@@ -194,8 +194,9 @@ class Validation {
 
     /**
      * Enables or disables the submit button and optionally changes its text.
-     * @param disabled
-     * @param text
+     * @param {boolean} disabled - True to disable the submit button, false to enable it.
+     * @param {string} text - The text to display on the submit button.
+     * @returns {void}
      */
     submitDisabled(disabled, text) {
         $(this.submitButton).prop("disabled", disabled), $(this.submitButton).val(text)
@@ -203,6 +204,8 @@ class Validation {
 
     /**
      * Checks all registered inputs for validation and prevents form submission if any validation fails.
+     * This method is bound to the form's submit event.
+     * @returns {void}
      */
     checkAll() {
         $(this.form).submit(t => {
@@ -225,9 +228,9 @@ class Validation {
 
     /**
      * Displays a warning message for a target element and updates its validation state.
-     * @param target_element
-     * @param element_id
-     * @param warning_message
+     * @param {jQuery} target_element - The jQuery object of the input element to validate.
+     * @param {string} element_id - The ID of the input element, used for generating feedback element IDs.
+     * @param {string} warning_message - The warning message to display.
      */
     showWarning(target_element, element_id, warning_message) {
         warning_message ? (this.generateFeedback(target_element, element_id, "invalid-feedback", warning_message), this.makeInvalid(target_element)) : (this.generateFeedback(target_element, element_id, "", ""), this.makeValid(target_element))
@@ -235,7 +238,7 @@ class Validation {
 
     /**
      * Marks an input element as valid by adding the appropriate class.
-     * @param target_element
+     * @param {jQuery} target_element - The jQuery object of the input element to mark as valid.
      */
     makeValid(target_element) {
         target_element.hasClass(this.validC) || target_element.addClass(this.validC), target_element.hasClass(this.invalidC) && target_element.removeClass(this.invalidC)
@@ -243,7 +246,7 @@ class Validation {
 
     /**
      * Removes the validation state from an input element.
-     * @param target_element
+     * @param {jQuery} target_element - The jQuery object of the input element to clear validation state.
      */
     removeValid(target_element) {
         target_element.hasClass(this.validC) && target_element.removeClass(this.validC)
@@ -251,7 +254,7 @@ class Validation {
 
     /**
      * Marks an input element as invalid by adding the appropriate class.
-     * @param target_element
+     * @param {jQuery} target_element - The jQuery object of the input element to mark as invalid.
      */
     makeInvalid(target_element) {
         target_element.hasClass(this.invalidC) || target_element.addClass(this.invalidC), target_element.hasClass(this.validC) && target_element.removeClass(this.validC)
@@ -259,7 +262,7 @@ class Validation {
 
     /**
      * Adds an asterisk (*) symbol before a target element to indicate it is required.
-     * @param target_element
+     * @param {jQuery} target_element - The jQuery object of the input element to mark as required.
      */
     createAsterisk(target_element) {
         $("<span class='text-danger'>*</span>").insertBefore(target_element)
@@ -267,10 +270,10 @@ class Validation {
 
     /**
      * Generates and displays a feedback message for an input element.
-     * @param target_element
-     * @param element_id
-     * @param class_value
-     * @param inner_text
+     * @param {jQuery} target_element - The jQuery object of the input element to provide feedback for.
+     * @param {string} element_id - The ID of the input element, used for generating feedback element IDs.
+     * @param {string} class_value - The class to apply to the feedback element, indicating validation state.
+     * @param {string} inner_text - The feedback message to display.
      */
     generateFeedback(target_element, element_id, class_value, inner_text) {
         $("#" + element_id + "-feedback").remove(), $('<div id="' + element_id + '-feedback" class="' + class_value + '">' + inner_text + "</div>").insertAfter(target_element)
