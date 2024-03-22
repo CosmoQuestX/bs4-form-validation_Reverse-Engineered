@@ -99,11 +99,9 @@ class Validation {
      * @param {boolean} [required=true] - Are the fields required?
      * @returns {string} - A message indicating the validation result for the password.
      */
-    registerPassword(password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id, required= true) {
+    registerPassword(password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id, required = true) {
         let password_element = $("#" + password_element_id),
-            confirm_password_element = $("#" + confirm_password_element_id),
-            l = "",
-            c = "";
+            confirm_password_element = $("#" + confirm_password_element_id);
 
         if (required) {
             this.createAsterisk(password_element);
@@ -111,57 +109,34 @@ class Validation {
         }
 
         this.inputLog.push(["registerPassword", password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id, required]);
-        $(password_element).on("input focus", password_element, () => {
-            if (required || password_element.val().length > 0) {console.debug("caught passwrd focus");
-                l = "";
+
+        const validate = () => {
+            let l = "", c = "";
+            if (required || password_element.val().length > 0 || confirm_password_element.val().length > 0) {
                 l += this.lengthCheck(password_element, exclusive_min_length, exclusive_max_length);
                 l += this.illegalCharCheck(password_element, array_of_illegal_characters);
-                this.showWarning(password_element, password_element_id, l);
-                c = "";
-                c += this.passwordMatchCheck(password_element, confirm_password_element);
-                this.showWarning(confirm_password_element, confirm_password_element_id, c);
-            } else {console.debug("uncaught passwrd focus");
-                this.showWarning(password_element, password_element_id, "");
-                this.showWarning(confirm_password_element, confirm_password_element_id, "");
-                this.removeValid(password_element);
-                this.removeValid(confirm_password_element);
-            }
-        });
-        $(password_element).on("input", password_element, () => {
-            this.submitDisabled(!1, this.submitButtonText);
-        });
-        $(password_element).on("focusout", password_element, () => {
-            if (required || password_element.val().length > 0) {console.debug("caught passwrd focusout");
                 l += this.necessaryCharCheck(password_element, array_of_required_characters);
                 l += this.capitalCheck(password_element);
                 l += this.numberCheck(password_element);
                 l += this.specialCharCheck(password_element);
-                this.showWarning(password_element, password_element_id, l);
-                this.removeValid(password_element);
-                this.removeValid(confirm_password_element);
-            } else {console.debug("uncaught passwrd focusout");
-                this.showWarning(password_element, password_element_id, "");
-                this.removeValid(password_element);
-            }
-        });
-        $(confirm_password_element).on("input focus", confirm_password_element, () => {
-            if (required || confirm_password_element.val().length > 0 || password_element.val().length > 0) {console.debug("caught confirm input focus");
-                c = "";
                 c += this.passwordMatchCheck(password_element, confirm_password_element);
-                this.showWarning(confirm_password_element, confirm_password_element_id, c);
-            } else {console.debug("uncaught confirm input focus");
-                this.showWarning(confirm_password_element, confirm_password_element_id, "");
-                this.removeValid(confirm_password_element);
             }
-        });
-        $(confirm_password_element).on("input", password_element, () => {
-            this.submitDisabled(!1, this.submitButtonText);
-        });
-        $(confirm_password_element).on("focusout", confirm_password_element, () => {
-            this.removeValid(confirm_password_element);
-        });
-        return l;
+
+            this.showWarning(password_element, password_element_id, l);
+            this.showWarning(confirm_password_element, confirm_password_element_id, c);
+
+            // Determine if there are validation errors and disable/enable the submit button accordingly
+            const hasErrors = l !== "" || c !== "";
+            this.submitDisabled(hasErrors, this.submitButtonText);
+        };
+
+        password_element.on("input focus focusout", validate);
+        confirm_password_element.on("input focus focusout", validate);
+
+        return ""; // Since the validation messages are handled through showWarning, returning a value might not be necessary.
     }
+
+
 
     /**
      * Checks the length of the input value against set minimum (exclusive) and maximum (exclusive) lengths.
@@ -276,8 +251,9 @@ class Validation {
                     l = a[3],
                     c = a[4],
                     o = a[5],
-                    p = a[6];
-                if (p === false && $("#" + h).val().length === 0 && $("#" + o).val().length === 0) return;
+                    p = a[6],
+                    q = a[7];
+                if (q === false && r.val().length === 0 && $("#" + p).val().length === 0) return;
                 if ("registerPassword" === a[0]) {
                     var u = a[6],
                         C = $("#" + u);
