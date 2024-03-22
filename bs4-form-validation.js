@@ -40,21 +40,23 @@ class Validation {
     requireText(target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters) {
         let target_element = $("#" + target_element_id),
             response_text = "";
-        return this.createAsterisk(target_element),
-            this.inputLog.push(["requireText", target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters]),
-            $(target_element).on("input focus", target_element, () => {
-                response_text = "",
-                response_text += this.lengthCheck(target_element, exclusive_min_length, exclusive_max_length),
-                    response_text += this.illegalCharCheck(target_element, array_of_illegal_characters),
-                    this.showWarning(target_element, target_element_id, response_text)
-            }),
-            $(target_element).on("input", target_element, () => {
-                this.submitDisabled(!1, this.submitButtonText)
-            }),
-            $(target_element).on("focusout", target_element, () => {
-                response_text += this.necessaryCharCheck(target_element, array_of_required_characters), this.showWarning(target_element, target_element_id, response_text), this.removeValid(target_element)
-            }),
-            response_text
+        this.createAsterisk(target_element);
+        this.inputLog.push(["requireText", target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters]);
+        $(target_element).on("input focus", target_element, () => {
+            response_text = "";
+            response_text += this.lengthCheck(target_element, exclusive_min_length, exclusive_max_length);
+            response_text += this.illegalCharCheck(target_element, array_of_illegal_characters);
+            this.showWarning(target_element, target_element_id, response_text);
+        });
+        $(target_element).on("input", target_element, () => {
+            this.submitDisabled(!1, this.submitButtonText);
+        });
+        $(target_element).on("focusout", target_element, () => {
+            response_text += this.necessaryCharCheck(target_element, array_of_required_characters);
+            this.showWarning(target_element, target_element_id, response_text);
+            this.removeValid(target_element);
+        });
+        return response_text;
     }
 
     /**
@@ -69,13 +71,21 @@ class Validation {
     requireEmail(target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters) {
         let target_element = $("#" + target_element_id),
             response_text = "";
-        return this.createAsterisk(target_element), this.inputLog.push(["requireEmail", target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters]), $(target_element).on("input focus", target_element, () => {
+        this.createAsterisk(target_element);
+        this.inputLog.push(["requireEmail", target_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters]);
+        $(target_element).on("input focus", target_element, () => {
             response_text = "", response_text += this.lengthCheck(target_element, exclusive_min_length, exclusive_max_length), response_text += this.illegalCharCheck(target_element, array_of_illegal_characters), this.showWarning(target_element, target_element_id, response_text)
-        }), $(target_element).on("input", target_element, () => {
+        });
+        $(target_element).on("input", target_element, () => {
             this.submitDisabled(!1, this.submitButtonText)
-        }), $(target_element).on("focusout", target_element, () => {
-            response_text += this.necessaryCharCheck(target_element, array_of_required_characters), response_text += this.emailCheck(target_element), this.showWarning(target_element, target_element_id, response_text), this.removeValid(target_element)
-        }), response_text
+        });
+        $(target_element).on("focusout", target_element, () => {
+            response_text += this.necessaryCharCheck(target_element, array_of_required_characters);
+            response_text += this.emailCheck(target_element);
+            this.showWarning(target_element, target_element_id, response_text);
+            this.removeValid(target_element);
+        });
+        return response_text;
     }
 
     /**
@@ -86,26 +96,71 @@ class Validation {
      * @param {Array<string>} array_of_illegal_characters - An array of characters considered illegal in the password.
      * @param {Array<string>} array_of_required_characters - An array of required characters in the password.
      * @param {string} confirm_password_element_id - The ID of the confirmation password input element.
+     * @param {boolean} [required=true] - Are the fields required?
      * @returns {string} - A message indicating the validation result for the password.
      */
-    registerPassword(password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id) {
+    registerPassword(password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id, required= true) {
         let password_element = $("#" + password_element_id),
             confirm_password_element = $("#" + confirm_password_element_id),
             l = "",
             c = "";
-        return this.createAsterisk(password_element), this.createAsterisk(confirm_password_element), this.inputLog.push(["registerPassword", password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id]), $(password_element).on("input focus", password_element, () => {
-            l = "", l += this.lengthCheck(password_element, exclusive_min_length, exclusive_max_length), l += this.illegalCharCheck(password_element, array_of_illegal_characters), this.showWarning(password_element, password_element_id, l), c = "", c += this.passwordMatchCheck(password_element, confirm_password_element), this.showWarning(confirm_password_element, confirm_password_element_id, c)
-        }), $(password_element).on("input", password_element, () => {
-            this.submitDisabled(!1, this.submitButtonText)
-        }), $(password_element).on("focusout", password_element, () => {
-            l += this.necessaryCharCheck(password_element, array_of_required_characters), l += this.capitalCheck(password_element), l += this.numberCheck(password_element), l += this.specialCharCheck(password_element), this.showWarning(password_element, password_element_id, l), this.removeValid(password_element), this.removeValid(confirm_password_element)
-        }), $(confirm_password_element).on("input focus", confirm_password_element, () => {
-            c = "", c += this.passwordMatchCheck(password_element, confirm_password_element), this.showWarning(confirm_password_element, confirm_password_element_id, c)
-        }), $(confirm_password_element).on("input", password_element, () => {
-            this.submitDisabled(!1, this.submitButtonText)
-        }), $(confirm_password_element).on("focusout", confirm_password_element, () => {
-            this.removeValid(confirm_password_element)
-        }), l
+
+        if (required) {
+            this.createAsterisk(password_element);
+            this.createAsterisk(confirm_password_element);
+        }
+
+        this.inputLog.push(["registerPassword", password_element_id, exclusive_min_length, exclusive_max_length, array_of_illegal_characters, array_of_required_characters, confirm_password_element_id, required]);
+        $(password_element).on("input focus", password_element, () => {
+            if (required || password_element.val().length > 0) {console.debug("caught passwrd focus");
+                l = "";
+                l += this.lengthCheck(password_element, exclusive_min_length, exclusive_max_length);
+                l += this.illegalCharCheck(password_element, array_of_illegal_characters);
+                this.showWarning(password_element, password_element_id, l);
+                c = "";
+                c += this.passwordMatchCheck(password_element, confirm_password_element);
+                this.showWarning(confirm_password_element, confirm_password_element_id, c);
+            } else {console.debug("uncaught passwrd focus");
+                this.showWarning(password_element, password_element_id, "");
+                this.showWarning(confirm_password_element, confirm_password_element_id, "");
+                this.removeValid(password_element);
+                this.removeValid(confirm_password_element);
+            }
+        });
+        $(password_element).on("input", password_element, () => {
+            this.submitDisabled(!1, this.submitButtonText);
+        });
+        $(password_element).on("focusout", password_element, () => {
+            if (required || password_element.val().length > 0) {console.debug("caught passwrd focusout");
+                l += this.necessaryCharCheck(password_element, array_of_required_characters);
+                l += this.capitalCheck(password_element);
+                l += this.numberCheck(password_element);
+                l += this.specialCharCheck(password_element);
+                this.showWarning(password_element, password_element_id, l);
+                this.removeValid(password_element);
+                this.removeValid(confirm_password_element);
+            } else {console.debug("uncaught passwrd focusout");
+                this.showWarning(password_element, password_element_id, "");
+                this.removeValid(password_element);
+            }
+        });
+        $(confirm_password_element).on("input focus", confirm_password_element, () => {
+            if (required || confirm_password_element.val().length > 0 || password_element.val().length > 0) {console.debug("caught confirm input focus");
+                c = "";
+                c += this.passwordMatchCheck(password_element, confirm_password_element);
+                this.showWarning(confirm_password_element, confirm_password_element_id, c);
+            } else {console.debug("uncaught confirm input focus");
+                this.showWarning(confirm_password_element, confirm_password_element_id, "");
+                this.removeValid(confirm_password_element);
+            }
+        });
+        $(confirm_password_element).on("input", password_element, () => {
+            this.submitDisabled(!1, this.submitButtonText);
+        });
+        $(confirm_password_element).on("focusout", confirm_password_element, () => {
+            this.removeValid(confirm_password_element);
+        });
+        return l;
     }
 
     /**
@@ -116,7 +171,7 @@ class Validation {
      * @returns {string} - A message indicating if the input value does not meet the length requirements.
      */
     lengthCheck(target_element, exclusive_min_length, exclusive_max_length) {
-        return target_element.val().length <= exclusive_min_length ? "Must be longer than " + exclusive_min_length + " characters. " : target_element.val().length >= exclusive_max_length ? "Must be shorter than " + exclusive_max_length + " characters. " : ""
+        return target_element.val().length <= exclusive_min_length ? "Must be longer than " + exclusive_min_length + " characters. " : target_element.val().length >= exclusive_max_length ? "Must be shorter than " + exclusive_max_length + " characters. " : "";
     }
 
     /**
@@ -127,10 +182,11 @@ class Validation {
      */
     illegalCharCheck(target_element, array_of_illegal_characters) {
         let i = "";
-        return $(array_of_illegal_characters).each(function() {
-            console.log({target_element, val: target_element.val(), ths: this, index: target_element.val().indexOf(this)});
+        $(array_of_illegal_characters).each(function() {
+            console.debug({target_element, val: target_element.val(), ths: this, index: target_element.val().indexOf(this)}); // FIXME : Debug
             target_element.val().indexOf(this) >= 0 && (0 == !this.trim().length ? i += " " + this : i += " spaces")
-        }), "" === i ? "" : "Cannot use:" + i + ". "
+        });
+        return "" === i ? "" : "Cannot use:" + i + ". ";
     }
 
     /**
@@ -141,9 +197,10 @@ class Validation {
      */
     necessaryCharCheck(target_element, array_of_required_characters) {
         let i = "";
-        return $(array_of_required_characters).each(function() {
-            target_element.val().indexOf(this) >= 0 || (i += " " + this)
-        }), "" === i ? "" : "Must contain:" + i + ". "
+        $(array_of_required_characters).each(function() {
+            target_element.val().indexOf(this) >= 0 || (i += " " + this);
+        });
+        return "" === i ? "" : "Must contain:" + i + ". ";
     }
 
     /**
@@ -152,7 +209,7 @@ class Validation {
      * @returns {string} - A message indicating the absence of numbers in the input value, if applicable.
      */
     numberCheck(target_element) {
-        return target_element.val().match(/\d/) ? "" : "Must contain a number. "
+        return target_element.val().match(/\d/) ? "" : "Must contain a number. ";
     }
 
     /**
@@ -161,7 +218,7 @@ class Validation {
      * @returns {string} - A message indicating the absence of special characters in the input value, if applicable.
      */
     specialCharCheck(target_element) {
-        return target_element.val().match(/\W|_/g) ? "" : "Must contain a special character. "
+        return target_element.val().match(/\W|_/g) ? "" : "Must contain a special character. ";
     }
 
     /**
@@ -170,7 +227,7 @@ class Validation {
      * @returns {string} - A message indicating the absence of uppercase letters in the input value, if applicable.
      */
     capitalCheck(target_element) {
-        return target_element.val().match(/[A-Z]+/) ? "" : "Must contain capital letter. "
+        return target_element.val().match(/[A-Z]+/) ? "" : "Must contain capital letter. ";
     }
 
     /**
@@ -180,7 +237,7 @@ class Validation {
      * @returns {string} - A message indicating whether the passwords do not match.
      */
     passwordMatchCheck(password_element, confirm_password_element) {
-        return password_element.val() === confirm_password_element.val() ? "" : "Passwords do not match. "
+        return password_element.val() === confirm_password_element.val() ? "" : "Passwords do not match. ";
     }
 
     /**
@@ -189,7 +246,7 @@ class Validation {
      * @returns {string} - A message indicating whether the input value is not a valid email address.
      */
     emailCheck(target_element) {
-        return target_element.val().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ? "" : "Is not a proper email"
+        return target_element.val().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ? "" : "Is not a proper email.";
     }
 
     /**
@@ -199,7 +256,7 @@ class Validation {
      * @returns {void}
      */
     submitDisabled(disabled, text) {
-        $(this.submitButton).prop("disabled", disabled), $(this.submitButton).val(text)
+        $(this.submitButton).prop("disabled", disabled), $(this.submitButton).val(text);
     }
 
     /**
@@ -218,10 +275,34 @@ class Validation {
                     n = a[2],
                     l = a[3],
                     c = a[4],
-                    o = a[5];
-                if ("registerPassword" === a[0]) var u = a[6],
-                    C = $("#" + u);
-                i = "", i += this.lengthCheck(r, n, l), i += this.illegalCharCheck(r, c), i += this.necessaryCharCheck(r, o), "requireEmail" === a[0] && (i += this.emailCheck(r)), "registerPassword" === a[0] && (i += this.capitalCheck(r), i += this.numberCheck(r), i += this.specialCharCheck(r), e += this.passwordMatchCheck(r, C)), i && (this.showWarning(r, h, i), this.submitDisabled(!0, "Error, please check your form"), t.preventDefault()), e && (this.showWarning(C, u, e), this.submitDisabled(!0, "Error, please check your form"), t.preventDefault())
+                    o = a[5],
+                    p = a[6];
+                if (p === false && $("#" + h).val().length === 0 && $("#" + o).val().length === 0) return;
+                if ("registerPassword" === a[0]) {
+                    var u = a[6],
+                        C = $("#" + u);
+                }
+                i = "",
+                    i += this.lengthCheck(r, n, l),
+                    i += this.illegalCharCheck(r, c),
+                    i += this.necessaryCharCheck(r, o),
+                "requireEmail" === a[0] && (i += this.emailCheck(r)),
+                "registerPassword" === a[0] && (
+                    i += this.capitalCheck(r),
+                        i += this.numberCheck(r),
+                        i += this.specialCharCheck(r),
+                        e += this.passwordMatchCheck(r, C)
+                ),
+                i && (
+                    this.showWarning(r, h, i),
+                        this.submitDisabled(!0, "Error, please check your form"),
+                        t.preventDefault()
+                ),
+                e && (
+                    this.showWarning(C, u, e),
+                        this.submitDisabled(!0, "Error, please check your form"),
+                        t.preventDefault()
+                )
             })
         })
     }
